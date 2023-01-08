@@ -10,7 +10,7 @@ const ExtractJWT = passportJWT.ExtractJwt;
 
 let jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
-jwtOptions.secretOrKey = process.env.SECRET;
+jwtOptions.secretOrKey = "ilikecake";
 const strategy = new JWTStrategy(jwtOptions, (payload, next) => {
   const user = UserModel.findByUserName(payload);
   if (user) {
