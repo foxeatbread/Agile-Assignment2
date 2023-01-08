@@ -8,7 +8,6 @@ variables:
 cache:
    key:
      files:
-        - cd movies-api
         - package.json
    paths:
       - .npm
@@ -23,39 +22,72 @@ stages:
   - build
   - test
   - staging
+  - production
 
 # Jobs:
 
 install_dependencies:
   stage: install
   script:
-    - cd movies-api
     - npm  ci
 
 Build_api:
   stage: build
+  before_script:
+    - npm run clean
   script:
-    - cd movies-api
-    - npm install
+    - npm run build
 
 test_api:
   stage: test
+  before_script:
+    - npm install -g grunt-cli
   script:
-    - cd movies-api
-    - npm install
     - npm test
+    - echo "Tested and generate Code Coverage reports"
+    - grunt coveralls
+    - echo "Publish the Code Coverage reports on the Coveralls web service"
 
 deploy_staging:
   image: ruby:latest
-  only:
-    - develop
   stage: staging
   before_script:
-    - cd movies-api
     - apt-get update -qy
     - apt-get install -y ruby-dev
     - gem install dpl
-  script:
-    - cd movies-api  
+  script:  
     - dpl --provider=heroku --app=$HEROKU_APP_NAME_STAGING --api-key=$HEROKU_API_KEY
     - echo "Deployed to staging server"
+
+deploy_prod_manual:
+  image: ruby:latest
+  only:
+    - develop
+  stage: production
+  before_script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl  
+  script:
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME_PRODUCTION --api-key=$HEROKU_API_KEY
+    - echo "Deploy to production server manually"
+  environment:
+    name: production
+    url: https://agile-ca2-cicd-jgl-production.herokuapp.com/
+  when: manual
+
+deploy_prod_auto:
+  image: ruby:latest
+  only:
+    - main
+  stage: production
+  before_script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl  
+  script:
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME_PRODUCTION --api-key=$HEROKU_API_KEY
+    - echo "Deploy to production server automatically"
+  environment:
+    name: production
+    url: https://agile-ca2-cicd-jgl-production.herokuapp.com/
