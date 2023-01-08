@@ -58,16 +58,24 @@ router.get('/tmdb/movies', (0, _expressAsyncHandler["default"])( /*#__PURE__*/fu
 }()));
 router.get('/tmdb/movie/:id', (0, _expressAsyncHandler["default"])( /*#__PURE__*/function () {
   var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res) {
-    var movie;
+    var id, movie;
     return _regenerator["default"].wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
-          _context3.next = 2;
-          return (0, _tmdbApi.getMovie)(req.params.id);
-        case 2:
+          id = parseInt(req.params.id);
+          _context3.next = 3;
+          return _movieModel["default"].findByMovieDBId(id);
+        case 3:
           movie = _context3.sent;
-          res.status(200).json(movie);
-        case 4:
+          if (movie) {
+            res.status(200).json(movie);
+          } else {
+            res.status(404).json({
+              message: 'The resource you requested could not be found.',
+              status_code: 404
+            });
+          }
+        case 5:
         case "end":
           return _context3.stop();
       }
@@ -150,7 +158,13 @@ router.get('/tmdb/reviews/movieImages/:id', (0, _expressAsyncHandler["default"])
           return (0, _tmdbApi.getMovieImages)(req.params.id);
         case 2:
           movieImages = _context7.sent;
-          res.status(200).json(movieImages);
+          if (req.params.id) {
+            res.status(200).json(movieImages);
+          } else {
+            res.status(403).json({
+              message: 'Invalid movie image number.'
+            });
+          }
         case 4:
         case "end":
           return _context7.stop();
@@ -171,7 +185,14 @@ router.get('/tmdb/pages/:page', (0, _expressAsyncHandler["default"])( /*#__PURE_
           return (0, _tmdbApi.getPages)(req.params.page);
         case 2:
           pages = _context8.sent;
-          res.status(200).json(pages);
+          if (pages) {
+            res.status(200).json(pages);
+          } else {
+            res.status(403).json({
+              message: 'Invalid page form.',
+              status_code: 404
+            });
+          }
         case 4:
         case "end":
           return _context8.stop();
