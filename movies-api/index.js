@@ -22,6 +22,7 @@ app.use('/api/genres', genresRouter);
 app.use('/api/movies', moviesRouter);
 app.use('/api/users', usersRouter);
 
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.info(`Server running at ${port}`);
 });
+module.exports = server
