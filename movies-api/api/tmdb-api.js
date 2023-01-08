@@ -127,7 +127,7 @@ export const getMovies = () => {
       return response.json();
     })
     .catch((error) => {
-       throw error
+       throw error;
     });
   };
   
@@ -141,7 +141,7 @@ export const getMovies = () => {
       return response.json();
     })
     .catch((error) => {
-      throw error
+      throw error;
    });
   };
   
@@ -156,6 +156,6 @@ export const getMovies = () => {
       return response.json();
     })
     .catch((error) => {
-       throw error
+       throw error;
     });
   };

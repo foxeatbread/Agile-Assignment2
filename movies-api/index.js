@@ -3,9 +3,16 @@ import express from 'express';
 import moviesRouter from './api/movies/index.js';
 import genresRouter from './api/genres/index.js';
 import './db/index.js';
-import './seedData/index.js'
+import './seedData/index.js';
 import usersRouter from './api/users/index.js';
 import passport from './authenticate/index.js';
+import loglevel from 'loglevel';
+
+if (process.env.NODE_ENV === 'test') {
+  loglevel.setLevel('warn')
+  } else {
+  loglevel.setLevel('info')
+  }
 
 dotenv.config();
 
@@ -25,4 +32,4 @@ let server = app.listen(port, () => {
 });
 module.exports = server
 
-export default app;
+loglevel.info(`Server running at ${port}`);

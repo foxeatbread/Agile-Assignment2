@@ -29,8 +29,13 @@ router.get('/tmdb/movies', asyncHandler( async(req, res) => {
 }));
 
 router.get('/tmdb/movie/:id', asyncHandler( async(req, res) => {
-  const movie = await getMovie(req.params.id);
-  res.status(200).json(movie);
+  const id = parseInt(req.params.id);
+  const movie = await movieModel.findByMovieDBId(id);
+  if (movie) {
+      res.status(200).json(movie);
+  } else {
+      res.status(404).json({message: 'The resource you requested could not be found.', status_code: 404});
+  }
 }));
 
 router.get('/tmdb/genres', asyncHandler( async(req, res) => {
@@ -50,12 +55,19 @@ router.get('/tmdb/upcomingpage', asyncHandler( async(req, res) => {
 
 router.get('/tmdb/reviews/movieImages/:id', asyncHandler( async(req, res) => {
   const movieImages = await getMovieImages(req.params.id);
-  res.status(200).json(movieImages);
+  if(req.params.id){res.status(200).json(movieImages);}
+  else{res.status(403).json({message:'Invalid movie image number.'});}
+  
 }));
 
 router.get('/tmdb/pages/:page', asyncHandler( async(req, res) => {
   const pages = await getPages(req.params.page);
-  res.status(200).json(pages);
+
+  if (pages) {
+    res.status(200).json(pages);
+} else {
+    res.status(403).json({message: 'Invalid page form.', status_code: 404});
+}
 }));
 
 router.get('/tmdb/credits/:movie_id', asyncHandler( async(req, res) => {
