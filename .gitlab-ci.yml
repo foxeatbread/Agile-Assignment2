@@ -34,9 +34,6 @@ install_dependencies:
 
 Build_api:
   stage: build
-  before_script:
-     - cd movies-api
-     - npm run clean
   script:
     - cd movies-api
     - npm run build
