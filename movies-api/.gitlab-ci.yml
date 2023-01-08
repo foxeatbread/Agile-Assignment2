@@ -8,6 +8,7 @@ variables:
 cache:
    key:
      files:
+        - cd movies-api
         - package.json
    paths:
       - .npm
@@ -28,18 +29,22 @@ stages:
 install_dependencies:
   stage: install
   script:
+    - cd movies-api
     - npm  ci
 
 Build_api:
   stage: build
   before_script:
+     - cd movies-api
      - npm run clean
   script:
+    - cd movies-api
     - npm run build
 
 test_api:
   stage: test
   script:
+    - cd movies-api
     - npm test
 
 deploy_staging:
@@ -48,9 +53,11 @@ deploy_staging:
     - develop
   stage: staging
   before_script:
+    - cd movies-api
     - apt-get update -qy
     - apt-get install -y ruby-dev
     - gem install dpl
-  script:  
+  script:
+    - cd movies-api  
     - dpl --provider=heroku --app=$HEROKU_APP_NAME_STAGING --api-key=$HEROKU_API_KEY
     - echo "Deployed to staging server"
