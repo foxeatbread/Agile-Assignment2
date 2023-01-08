@@ -5,8 +5,6 @@ import genresRouter from './api/genres/index.js';
 import './db/index.js';
 import './seedData/index.js'
 import usersRouter from './api/users/index.js';
-import session from 'express-session/index.js';
-import authenticate from './authenticate/index.js';
 import passport from './authenticate/index.js';
 
 dotenv.config();
@@ -26,3 +24,5 @@ let server = app.listen(port, () => {
   console.info(`Server running at ${port}`);
 });
 module.exports = server
+
+export default app;
