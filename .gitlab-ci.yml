@@ -36,7 +36,7 @@ Build_api:
   stage: build
   script:
     - cd movies-api
-    - npm install
+    - npm install --global cross-env
 
 test_api:
   stage: test
