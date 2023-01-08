@@ -27,8 +27,7 @@ stages:
 # Jobs:
 
 install_dependencies:
-  stage: 
-    - install
+  stage: install
   script:
     - cd movies-api
     - npm  ci
