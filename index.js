@@ -6,13 +6,7 @@ import './db/index.js';
 import './seedData/index.js';
 import usersRouter from './api/users/index.js';
 import passport from './authenticate/index.js';
-import loglevel from 'loglevel';
 
-if (process.env.NODE_ENV === 'test') {
-  loglevel.setLevel('warn')
-  } else {
-  loglevel.setLevel('info')
-  }
 
 dotenv.config();
 
@@ -30,6 +24,4 @@ app.use('/api/users', usersRouter);
 let server = app.listen(port, () => {
   console.info(`Server running at ${port}`);
 });
-module.exports = server
-
-loglevel.info(`Server running at ${port}`);
+module.exports = server;

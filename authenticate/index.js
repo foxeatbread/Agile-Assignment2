@@ -11,8 +11,8 @@ const ExtractJWT = passportJWT.ExtractJwt;
 let jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = process.env.SECRET;
-const strategy = new JWTStrategy(jwtOptions, async (payload, next) => {
-  const user = await UserModel.findByUserName(payload);
+const strategy = new JWTStrategy(jwtOptions, (payload, next) => {
+  const user = UserModel.findByUserName(payload);
   if (user) {
     next(null, user);
   } else {
