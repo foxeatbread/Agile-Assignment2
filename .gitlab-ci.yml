@@ -1,72 +1,56 @@
+# Node docker image on which this would be run
 image: node:latest
-
-# Pipeline
-stages:
-  - install
-  - build
-  - exercise
-  - test
 
 variables:
    npm_config_cache: "$CI_PROJECT_DIR/.npm"
-   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+   NODE_ENV: 'test'
 
 cache:
    key:
      files:
-        - cd movies
         - package.json
    paths:
       - .npm
-      - cache/Cypress
-      - movies/node_modules
+      - node_modules
+      - build
 
-# Jobs 
-# Jobs 
+services:
+   - mongo
+
+stages:
+  - install
+  - build
+  - test
+  - staging
+
+# Jobs:
+
 install_dependencies:
   stage: install
   script:
-    - cd movies
-    - npm ci --cache .npm --prefer-offline
+    - npm  ci
 
-bundle_app:
+Build_api:
   stage: build
+  before_script:
+     - npm run clean
   script:
-    - cd movies
     - npm run build
-  artifacts:
-    paths:
-      - movies/build
 
-e2etest:
-# Node docker image with Cypress and Chrome pre-installed
-  image: cypress/browsers:node12.14.1-chrome85-ff81
+test_api:
   stage: test
   script:
-    - echo "Run tests in headless mode"
-    - cd movies
-    - npm run start:ci
+    - npm test
 
-build_jobX:
-  stage: build
+deploy_staging:
+  image: ruby:latest
   only:
     - develop
-    - branchX
-    - branchY
-  script:
-    - echo "build job X on demoBranch works"
-
-test_jobX:
-  stage: test
-  only:
-    - main
-    - branchX
-  script:
-    - echo "Run test job X"
-  
-exercise_job:
-  stage: exercise
-  only:
-    - main
-  script:
-    - echo "Finished the exercise"
+  stage: staging
+  before_script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+  script:  
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME_STAGING --api-key=$HEROKU_API_KEY
+    - echo "Deployed to staging server"
